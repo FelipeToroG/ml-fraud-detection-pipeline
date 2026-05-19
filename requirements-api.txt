@@ -1,0 +1,27 @@
+# requirements-api.txt
+# ====================
+# Pinned dependencies for the inference service only.
+#
+# Deliberately a strict subset of the project's training requirements:
+#   - No Optuna, MLflow, or visualization libraries — those are training
+#     concerns and do not belong in the serving runtime.
+#   - sklearn version matches the version that produced the pickled
+#     pipeline. Loading a model fitted under a different minor version
+#     can succeed silently while producing incorrect predictions.
+#   - joblib version matches the pickling environment for the same reason.
+
+scikit-learn==1.7.2
+joblib==1.5.3
+numpy==1.26.4
+pandas==2.3.3
+shap==0.49.1
+
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+pyyaml==6.0.3
+
+# Test dependencies pulled in here so the same lockfile drives both the
+# image and CI. httpx is required by FastAPI's TestClient.
+pytest==8.3.3
+httpx==0.27.2

@@ -1,0 +1,44 @@
+# .dockerignore
+# =============
+# Excludes from the Docker build context. Smaller context = faster builds
+# and prevents accidentally shipping data or experiment artifacts inside
+# the runtime image.
+
+# Data — must never enter the image
+data/
+
+# Experiment tracking artifacts
+mlruns/
+
+# Notebooks and exploratory work
+notebooks/
+docs/
+
+# Python build / cache artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments and editor metadata
+venv/
+.venv/
+.idea/
+.vscode/
+.DS_Store
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Tests do not ship in the runtime image
+tests/
+
+# Dev-only dependencies
+requirements.txt

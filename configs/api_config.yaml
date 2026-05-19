@@ -1,0 +1,42 @@
+# configs/api_config.yaml
+# =======================
+# Runtime configuration for the fraud detection inference API.
+#
+# Values that may need to be tuned in production without rebuilding the
+# container live here. Anything stable enough to commit to code (the
+# Pydantic schema, the cost matrix structure) stays in source.
+#
+# This file is read once at process startup. Changes require a restart.
+
+service:
+  name: "fraud-detection-api"
+  version: "0.1.0"
+  # Bound model artifact. Path is resolved relative to the project root
+  # (the directory containing this configs/ folder), not the working
+  # directory of the calling process — same convention as MLflow tracking.
+  model_path: "models/xgboost_best.pkl"
+
+inference:
+  # Cost-optimized threshold from Session 2's sweep across 200 candidates.
+  # Default 0.5 misses high-recall fraud cases; this value minimizes
+  # expected dollar loss under the project's cost matrix.
+  classification_threshold: 0.0261
+
+  # Number of SHAP features returned per prediction. Five is the smallest
+  # value that conveys a useful explanation without bloating the response.
+  # Setting this above ~10 produces diminishing returns: tail features
+  # contribute near-zero attribution and add noise for downstream consumers.
+  top_k_features: 5
+
+cost_matrix:
+  # Mirrors src/utils/cost_metrics.CostMatrix defaults. Duplicated here so
+  # ops can adjust cost assumptions per environment (e.g. higher review
+  # cost in production than staging) without touching code.
+  fn_cost: 125.17   # Average fraud transaction value (computed during EDA)
+  fp_cost: 5.00     # Per-flag manual review cost
+
+logging:
+  # JSON-structured logs land in stdout. Production deployments route this
+  # to a log aggregator; locally it streams to the terminal.
+  level: "INFO"
+  format: "json"

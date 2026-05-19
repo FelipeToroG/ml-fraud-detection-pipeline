@@ -1,9 +1,13 @@
 """
-Data loading utilities for the fraud detection pipeline.
+src/data/loader.py
+==================
+Single source of truth for data access and schema in the fraud detection
+pipeline.
 
-Provides a single source of truth for how data is loaded throughout the
-project — notebooks, training scripts, and the inference API all use these
-same functions to guarantee consistency.
+Centralizing these constants and functions in one module guarantees that
+notebooks, training scripts, the API, and tests cannot drift on schema or
+file location. A rename in this file either propagates cleanly across all
+consumers or fails loudly at import time. never silently.
 """
 
 from __future__ import annotations
@@ -13,7 +17,10 @@ from typing import Tuple
 
 import pandas as pd
 
-# Project root: two levels up from this file (src/data/loader.py)
+# Project root resolves relative to this file's location, not the working
+# directory of the calling process. The same code therefore works from a
+# notebook, a unit test, a uvicorn process, or a Docker container without
+# any path manipulation at the call site.
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = PROJECT_ROOT / "data" / "raw"
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
@@ -25,13 +32,20 @@ PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 TARGET_COL = "Response"
 ID_COL = "Transaction"
 
-# X1 to X28 are PCA-transformed predictors (anonymized for confidentiality).
+# X1..X28 are PCA-transformed predictors. The original source features were
+# anonymized before publication for confidentiality; the PCA basis is fixed
+# across all dataset versions, so column meaning is stable.
 PCA_FEATURES = [f"X{i}" for i in range(1, 29)]
 
-# Domain-meaningful features:
-AMOUNT_COL = "X29"   # Transaction amount in dollars
-TIME_COL = "X30"     # Seconds elapsed since the first transaction in dataset
+# Domain-meaningful features that are NOT subjected to PCA. These carry
+# direct business interpretation and are exposed unchanged to downstream
+# code.
+AMOUNT_COL = "X29"   # Transaction amount in USD
+TIME_COL = "X30"     # Seconds elapsed since the first transaction in the dataset
 
+# Order is load-bearing: the ColumnTransformer in src/features/pipelines.py
+# was fitted on this exact sequence. Any reordering invalidates the
+# serialized inference pipeline.
 ALL_FEATURES = PCA_FEATURES + [AMOUNT_COL, TIME_COL]
 
 
@@ -54,6 +68,8 @@ def load_training_data(filename: str = "training_data_1.csv") -> pd.DataFrame:
     """
     path = RAW_DIR / filename
     if not path.exists():
+        # Loud failure beats silent NaN propagation. Notebooks and tests
+        # surface this immediately rather than producing empty frames.
         raise FileNotFoundError(
             f"Training data not found at {path}. "
             f"Place the CSV file in data/raw/ before loading."
@@ -73,8 +89,9 @@ def split_features_target(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series]:
     """
     Split a labeled dataframe into (X, y).
 
-    Drops the Transaction ID column from features — it carries no predictive
-    signal and would leak identity if left in.
+    The Transaction ID column is dropped from features explicitly. Leaving
+    it in would leak per-row identity into the model and produce inflated
+    training-time scores that do not generalize.
     """
     if TARGET_COL not in df.columns:
         raise KeyError(f"Target column '{TARGET_COL}' not in dataframe.")

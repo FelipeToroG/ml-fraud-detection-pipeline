@@ -116,3 +116,7 @@ Thumbs.db
 .LSOverride
 Icon?
 ._*
+!models/xgboost_best.pkl
+
+# CatBoost training artifacts
+catboost_info/

@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif">
+  <!-- Background -->
+  <rect width="1280" height="640" fill="#f8fafc"/>
+
+  <!-- Title block -->
+  <text x="60" y="56" font-size="26" font-weight="700" fill="#0f172a">ML Fraud Detection Pipeline</text>
+  <text x="60" y="84" font-size="15" font-weight="500" fill="#475569">From raw data to production API, with cost-aware decisions at every step</text>
+  <line x1="60" y1="104" x2="1220" y2="104" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Phase labels -->
+  <text x="120" y="148" font-size="11" font-weight="700" fill="#64748b" letter-spacing="2">PHASE 1  TRAINING</text>
+  <text x="500" y="148" font-size="11" font-weight="700" fill="#64748b" letter-spacing="2">PHASE 2  DEPLOYMENT</text>
+  <text x="900" y="148" font-size="11" font-weight="700" fill="#64748b" letter-spacing="2">PHASE 3  SERVING</text>
+
+  <!-- Phase 1: Training -->
+  <g>
+    <!-- Step 1: Data -->
+    <rect x="60" y="170" width="180" height="92" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="150" y="200" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Raw data</text>
+    <text x="150" y="222" text-anchor="middle" font-size="12" fill="#475569">250K transactions</text>
+    <text x="150" y="240" text-anchor="middle" font-size="12" fill="#475569">0.18% fraud rate</text>
+    <text x="150" y="256" text-anchor="middle" font-size="11" fill="#94a3b8">data/raw/</text>
+
+    <!-- Step 2: EDA -->
+    <rect x="60" y="280" width="180" height="92" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="150" y="310" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">EDA</text>
+    <text x="150" y="332" text-anchor="middle" font-size="12" fill="#475569">Schema + cost framing</text>
+    <text x="150" y="350" text-anchor="middle" font-size="12" fill="#475569">$125 FN vs $5 FP</text>
+    <text x="150" y="366" text-anchor="middle" font-size="11" fill="#94a3b8">01_eda.ipynb</text>
+
+    <!-- Step 3: Training Pipeline -->
+    <rect x="60" y="390" width="180" height="92" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="150" y="420" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Training</text>
+    <text x="150" y="442" text-anchor="middle" font-size="12" fill="#475569">6 models, 240 trials</text>
+    <text x="150" y="460" text-anchor="middle" font-size="12" fill="#475569">Optuna + MLflow</text>
+    <text x="150" y="476" text-anchor="middle" font-size="11" fill="#94a3b8">02_modeling.ipynb</text>
+
+    <!-- Step 4: Threshold -->
+    <rect x="280" y="280" width="180" height="92" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="370" y="310" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Threshold sweep</text>
+    <text x="370" y="332" text-anchor="middle" font-size="12" fill="#475569">200 candidates</text>
+    <text x="370" y="350" text-anchor="middle" font-size="12" fill="#475569">Cost-optimal: 0.0261</text>
+    <text x="370" y="366" text-anchor="middle" font-size="11" fill="#94a3b8">cost_metrics.py</text>
+
+    <!-- Connectors -->
+    <path d="M150 262 L150 280" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <path d="M150 372 L150 390" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <path d="M240 326 L280 326" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Phase 2: Deployment -->
+  <g>
+    <!-- Winner -->
+    <rect x="500" y="280" width="200" height="92" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+    <text x="600" y="310" text-anchor="middle" font-size="14" font-weight="700" fill="#064e3b">Winning model</text>
+    <text x="600" y="332" text-anchor="middle" font-size="13" font-weight="600" fill="#047857">XGBoost</text>
+    <text x="600" y="350" text-anchor="middle" font-size="12" fill="#475569">Expected cost: $2,508</text>
+    <text x="600" y="366" text-anchor="middle" font-size="11" fill="#94a3b8">models/xgboost_best.pkl</text>
+
+    <!-- Connectors from Phase 1 to winner -->
+    <path d="M460 326 L500 326" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+    <path d="M240 436 Q380 436 380 380 Q380 360 500 340" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+    <!-- FastAPI Service -->
+    <rect x="740" y="280" width="200" height="92" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="840" y="310" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">FastAPI service</text>
+    <text x="840" y="332" text-anchor="middle" font-size="12" fill="#475569">Pydantic + SHAP</text>
+    <text x="840" y="350" text-anchor="middle" font-size="12" fill="#475569">19 contract tests</text>
+    <text x="840" y="366" text-anchor="middle" font-size="11" fill="#94a3b8">src/api/</text>
+
+    <!-- Connector winner to API -->
+    <path d="M700 326 L740 326" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Phase 3: Serving -->
+  <g>
+    <!-- Docker -->
+    <rect x="980" y="280" width="240" height="92" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="1100" y="310" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Docker container</text>
+    <text x="1100" y="332" text-anchor="middle" font-size="12" fill="#475569">Multi-stage build</text>
+    <text x="1100" y="350" text-anchor="middle" font-size="12" fill="#475569">uvicorn on port 8000</text>
+    <text x="1100" y="366" text-anchor="middle" font-size="11" fill="#94a3b8">Dockerfile</text>
+
+    <!-- Connector API to Docker -->
+    <path d="M940 326 L980 326" stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Outcomes bar at bottom -->
+  <rect x="60" y="528" width="1160" height="80" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="80" y="556" font-size="12" font-weight="700" fill="#64748b" letter-spacing="1.5">PRODUCTION OUTCOMES</text>
+
+  <g font-size="13" fill="#0f172a">
+    <text x="80" y="582" font-weight="700">86.1%</text>
+    <text x="135" y="582" fill="#475569">fraud caught</text>
+
+    <text x="260" y="582" font-weight="700">81.9%</text>
+    <text x="315" y="582" fill="#475569">precision</text>
+
+    <text x="425" y="582" font-weight="700">0.877</text>
+    <text x="475" y="582" fill="#475569">AUC-PR</text>
+
+    <text x="580" y="582" font-weight="700">$646</text>
+    <text x="625" y="582" fill="#475569">saved vs naive threshold</text>
+
+    <text x="855" y="582" font-weight="700">&lt;100ms</text>
+    <text x="920" y="582" fill="#475569">p99 latency</text>
+
+    <text x="1050" y="582" font-weight="700">19/19</text>
+    <text x="1105" y="582" fill="#475569">tests passing</text>
+  </g>
+
+  <g font-size="11" fill="#94a3b8">
+    <text x="80" y="599">118 of 137 fraud cases</text>
+    <text x="260" y="599">26 false alarms</text>
+    <text x="425" y="599">on holdout test</text>
+    <text x="580" y="599">20% cost reduction</text>
+    <text x="855" y="599">per request, local</text>
+    <text x="1050" y="599">contract + integration</text>
+  </g>
+
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Footer -->
+  <text x="60" y="635" font-size="11" fill="#94a3b8">github.com/FelipeToroG/ml-fraud-detection-pipeline   Felipe Toro   2026</text>
+</svg>

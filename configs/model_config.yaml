@@ -1,0 +1,156 @@
+# configs/model_config.yaml
+# =========================
+# Hyperparameter search spaces for Optuna.
+#
+# Each model section defines:
+#   n_trials   : number of Optuna trials to run
+#   params     : search space (type + bounds)
+#
+# Optuna samples these ranges using Bayesian optimization —
+# each trial is informed by the results of previous trials.
+
+experiment_name: "fraud_detection_v2"
+random_state: 42
+cv_folds: 5
+scoring_metric: "average_precision"   # AUC-PR — best for imbalanced classification
+
+models:
+
+  logistic_regression:
+    n_trials: 30
+    params:
+      C:
+        type: float
+        low: 0.001
+        high: 100.0
+        log: true
+      max_iter:
+        type: int
+        low: 200
+        high: 1000
+      class_weight:
+        type: categorical
+        choices: ["balanced", null]
+
+  random_forest:
+    n_trials: 40
+    params:
+      n_estimators:
+        type: int
+        low: 100
+        high: 500
+      max_depth:
+        type: int
+        low: 3
+        high: 20
+      min_samples_split:
+        type: int
+        low: 2
+        high: 20
+      min_samples_leaf:
+        type: int
+        low: 1
+        high: 10
+      class_weight:
+        type: categorical
+        choices: ["balanced", "balanced_subsample", null]
+
+  xgboost:
+    n_trials: 50
+    params:
+      n_estimators:
+        type: int
+        low: 100
+        high: 600
+      max_depth:
+        type: int
+        low: 3
+        high: 10
+      learning_rate:
+        type: float
+        low: 0.01
+        high: 0.3
+        log: true
+      subsample:
+        type: float
+        low: 0.6
+        high: 1.0
+      colsample_bytree:
+        type: float
+        low: 0.6
+        high: 1.0
+      scale_pos_weight:
+        type: float
+        low: 1.0
+        high: 600.0
+        log: true
+
+  lightgbm:
+    n_trials: 50
+    params:
+      n_estimators:
+        type: int
+        low: 100
+        high: 600
+      max_depth:
+        type: int
+        low: 3
+        high: 10
+      learning_rate:
+        type: float
+        low: 0.01
+        high: 0.3
+        log: true
+      num_leaves:
+        type: int
+        low: 20
+        high: 150
+      subsample:
+        type: float
+        low: 0.6
+        high: 1.0
+      class_weight:
+        type: categorical
+        choices: ["balanced", null]
+
+  catboost:
+    n_trials: 40
+    params:
+      iterations:
+        type: int
+        low: 100
+        high: 500
+      depth:
+        type: int
+        low: 3
+        high: 8
+      learning_rate:
+        type: float
+        low: 0.01
+        high: 0.3
+        log: true
+      l2_leaf_reg:
+        type: float
+        low: 1.0
+        high: 10.0
+
+  mlp:
+    n_trials: 30
+    params:
+      hidden_layer_sizes:
+        type: categorical
+        choices: [[64, 32], [128, 64], [128, 64, 32], [256, 128], [256, 128, 64]]
+      alpha:
+        type: float
+        low: 0.0001
+        high: 0.1
+        log: true
+      learning_rate_init:
+        type: float
+        low: 0.0001
+        high: 0.01
+        log: true
+      max_iter:
+        type: int
+        low: 200
+        high: 500
