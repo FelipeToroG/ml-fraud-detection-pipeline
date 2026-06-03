@@ -2,6 +2,8 @@
 
 End-to-end production ML system for detecting fraudulent credit card transactions. Built with sklearn Pipelines, gradient boosting (XGBoost, LightGBM, CatBoost), Optuna hyperparameter tuning, MLflow experiment tracking, SHAP explainability, and a FastAPI inference service deployed via Docker.
 
+> **Portfolio context:** This is Project 1 of my AI/ML engineering portfolio. It focuses on production ML engineering fundamentals: cost-aware model selection, zero-leakage pipelines, threshold optimization, SHAP explainability, FastAPI service, and contract tests. My current flagship work integrates ML detection with LLM-powered case adjudication and production observability. See the [AML Compliance Platform](https://github.com/FelipeToroG/aml-transaction-monitoring) for that work.
+
 **Author:** Felipe Toro
 **License:** MIT
 **Status:** Production model trained, FastAPI service running, pytest suite green.
