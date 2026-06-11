@@ -308,6 +308,6 @@ This repo is the first of three production-ML portfolio pieces I'm shipping in 2
 ## Contact
 
 **Felipe Toro**
-[LinkedIn](https://linkedin.com/in/felipe-toro-g) · [Portfolio](https://felipetorog.github.io/Portfolio) · ftoro26@gmail.com
+[LinkedIn](https://linkedin.com/in/felipe-toro-g) · ftoro26@gmail.com
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
